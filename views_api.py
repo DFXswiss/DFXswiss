@@ -24,7 +24,7 @@ async def api_encode_lndhub(invoiceKey: str, request: Request):
 
 @dfxswiss_ext.get("/api/v1/signIn/{address}")
 async def api_sign_in(address: str):
-  url = 'https://dev.api.dfx.swiss/v1/auth/signIn'
+  url = 'https://api.dfx.swiss/v1/auth/signIn'
   signature = createSignature(address)
 
   data = {
@@ -47,7 +47,7 @@ async def api_sign_in(address: str):
 
 @dfxswiss_ext.get("/api/v1/signUp/{address}")
 async def api_sign_up(address: str):
-  url = 'https://dev.api.dfx.swiss/v1/auth/signUp'
+  url = 'https://api.dfx.swiss/v1/auth/signUp'
   signature = createSignature(address)
 
   data = {

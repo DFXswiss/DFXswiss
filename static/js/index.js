@@ -59,7 +59,7 @@ new Vue({
     },
     openInNewTab() {
       if (this.accessToken) {
-        url = `https://dev.payment.dfx.swiss/login?token=${this.accessToken}`;
+        url = `https://payment.dfx.swiss/login?token=${this.accessToken}`;
         window.open(url, '_blank', 'noreferrer');
       } else {
         LNbits.utils.notifyApiError('Cannot open payment website');
@@ -73,9 +73,6 @@ new Vue({
         .request('GET', `/api/v1/wallet`, inkey)
         .then(response => {
           this.balance = response.data.balance/1000/100000000;
-
-          // Just for testing purposes, if the wallet is empty
-          // this.balance = 0.00010000;
         })
         .catch(err => {
           LNbits.utils.notifyApiError(err);
@@ -101,7 +98,6 @@ new Vue({
         this.reset();
 
         const transferData = JSON.parse(event.data);
-        //console.log("Message received from the child: " + JSON.stringify(transferData));
 
         const type = transferData.type;
 
