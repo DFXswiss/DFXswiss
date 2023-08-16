@@ -1,0 +1,130 @@
+{% extends "base.html" %} {% from "macros.jinja" import window_vars with context
+%} {% block page %}
+<div class="row q-col-gutter-md">
+  {% raw %}
+  <div class="col-12 col-md-7 q-gutter-y-md">
+    <h4 class="q-my-none">
+      <image class="q-avatar" src="/dfxswiss/static/image/dfx.png"></image> DFX.swiss
+    </h4>
+    <p class="text-subtitle1 q-my-none">
+      Easy On and Off Ramp Fiat <q-icon name="swap_horiz"></q-icon> Bitcoin Lightning &#9889; 
+    </p>
+    <p class="text-subtitle1 q-my-none">
+      - up to 1'000 EUR without KYC
+    </p>
+
+    <q-card class="q-pa-md">
+      <q-form class="q-gutter-md">
+        <q-select
+          filled
+          dense
+          v-model="selectedWallet"
+          :options="wallets"
+          label="Select Wallet:"
+          @input="selectWallet()" 
+        >
+        </q-select>
+      </q-form>
+    </q-card>
+
+    <q-card v-if="accessToken==null" class="q-pa-none">
+      <q-card-section>
+        <q-btn unelevated color="primary" @click="openPaymentWebsite()">
+          Buy &amp; Sell
+        </q-btn>
+      </q-card-section>
+    </q-card>
+
+    <q-card v-if="accessToken!=null" class="q-pa-none">
+      <q-card-section class="q-my-none q-pa-none">
+        <div align="center">
+          <iframe
+            :src="'https://dev.services.dfx.swiss/?session='+accessToken+'&balances='+balance+'@BTC'"
+            frameborder="0"
+            name="BuySellFrame"
+            id="BuySellFrame"
+          >
+          </iframe>
+        </div>
+      </q-card-section>
+    </q-card>
+
+    <q-card v-if="buy.iban!=null" class="q-pa-none">
+      <q-card-section>
+        <p class="text-subtitle1 q-my-none">Purchase Summary</p>
+        <div class="flex row q-mt-sm">
+          <div class="col-xs-4">
+            <p class="q-my-none">Recipient IBAN:</p>
+            <p class="q-my-none">Recipient BIC:</p>
+            <p class="q-my-none">Purpose of Payment:</p>
+            <p class="q-my-none">Estimated Amount:</p>
+          </div>
+          <div>
+            <p class="text-warning q-my-none">{{ buy.iban }}</p>
+            <p class="text-warning q-my-none">{{ buy.bic }}</p>
+            <p class="text-warning q-my-none">{{ buy.remittanceInfo }}</p>
+            <p class="text-warning q-my-none">{{ buy.estimatedAmount }} {{ buy.asset }}</p>
+          </div>
+        </div>
+      </q-card-section>
+    </q-card>
+
+    <q-card v-if="sell.depositAddress!=null" class="q-pa-none">
+      <q-card-section>
+        <p class="text-subtitle1 q-my-none">Payment Summary</p>
+        <div>
+          <p class="q-ma-none q-mt-md">Deposit Address:</p>
+          <p class="text-warning linebreaker">{{ sell.depositAddress }}</p>
+          <p class="q-ma-none q-mt-md">Blockchain:</p>
+          <p class="text-warning linebreaker">{{ sell.blockchain }}</p>
+          <p class="q-ma-none q-mt-md">Payment Request:</p>
+          <p class="text-warning linebreaker">{{ sell.paymentRequest }}</p>
+          <p class="q-ma-none q-mt-md">Estimated Amount:</p>
+          <p class="text-warning linebreaker">{{ sell.estimatedAmount }} {{ sell.currency }}</p>
+        </div>
+      </q-card-section>
+    </q-card>
+
+    {% endraw %}
+    <!--
+    {% include "dfxswiss/_links.html" %}
+    -->
+  </div> 
+
+  <div class="col-12 col-md-5 q-gutter-y-md">
+    <q-card>
+      <q-card-section>
+        <h6 class="text-subtitle1 q-my-none">
+          {{SITE_TITLE}} DFX.swiss extension
+        </h6>
+      </q-card-section>
+      <q-card-section class="q-pa-none">
+        <q-separator></q-separator>
+        <q-list>
+          {% include "dfxswiss/_instructions.html" %}
+          <q-separator></q-separator>
+          {% include "dfxswiss/_developer_info.html" %}
+          <q-separator></q-separator>
+          {% include "dfxswiss/_support.html" %}
+          <q-separator></q-separator>
+          {% include "dfxswiss/_about.html" %}
+        </q-list>
+      </q-card-section>
+    </q-card>
+  </div>
+</div>
+{% endblock %} {% block scripts %} {{ window_vars(user) }}
+<script src="/dfxswiss/static/js/index.js"></script>
+<style>
+  iframe#BuySellFrame {
+    display: block;
+    width: 100%;
+    height: 55em;
+  }
+  .linebreaker {
+    margin: 0;
+    min-width: 20%;
+    word-break: break-all;
+  }
+</style>
+{% endblock %}

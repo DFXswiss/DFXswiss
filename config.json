@@ -1,0 +1,6 @@
+{
+  "name": "DFX.swiss",
+  "short_description": "DFX.swiss Lightning Fiat On- and Off-Ramp",
+	"tile": "/dfxswiss/static/image/dfx.png",
+  "contributors": ["github_username"]
+}
