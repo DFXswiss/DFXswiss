@@ -3,7 +3,7 @@
         {
             "id": "dfxswiss",
             "organisation": "DFXswiss",
-            "repository": "lnbits-extensions",
+            "repository": "DFXswiss",
             "name": "DFX.swiss",
             "short_description": "European Fiat on and off ramp for Lightning"
         }
