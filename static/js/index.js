@@ -1,5 +1,5 @@
 new Vue({
-  el: '#vue',
+  el: "#vue",
   mixins: [windowMixin],
   data() {
     return {
@@ -13,7 +13,7 @@ new Vue({
         bic: null,
         remittanceInfo: null,
         estimatedAmount: null,
-        asset: null
+        asset: null,
       },
 
       sell: {
@@ -22,8 +22,8 @@ new Vue({
         paymentRequest: null,
         estimatedAmount: null,
         currency: null,
-      }
-    }
+      },
+    };
   },
   methods: {
     selectWallet() {
@@ -32,81 +32,81 @@ new Vue({
     },
     openPaymentWebsite() {
       this.clearBuyAndSellInfo();
-      
-      inkey = this.selectedWallet['inkey'];
+
+      inkey = this.selectedWallet["inkey"];
 
       if (inkey) {
         LNbits.api
-        .request('GET', `/dfxswiss/api/v1/encode_lndhub/${inkey}`)
-        .then(response => {
-          this.signIn(response.data);
-        })
-        .catch(err => {
-          LNbits.utils.notifyApiError(err);
-        })
+          .request("GET", `/dfxswiss/api/v1/encode_lndhub/${inkey}`)
+          .then((response) => {
+            this.signIn(response.data);
+          })
+          .catch((err) => {
+            LNbits.utils.notifyApiError(err);
+          });
       }
     },
     signIn(lndhubaddress) {
       LNbits.api
-      .request('GET', `/dfxswiss/api/v1/signIn/${lndhubaddress}`)
-      .then(response => {
-        this.accessToken = response.data.accessToken;
-        this.getBalance();
-      })
-      .catch(err => {
-        LNbits.utils.notifyApiError(err);
-      })
+        .request("GET", `/dfxswiss/api/v1/signIn/${lndhubaddress}`)
+        .then((response) => {
+          this.accessToken = response.data.accessToken;
+          this.getBalance();
+        })
+        .catch((err) => {
+          LNbits.utils.notifyApiError(err);
+        });
     },
     openInNewTab() {
       if (this.accessToken) {
         url = `https://payment.dfx.swiss/login?token=${this.accessToken}`;
-        window.open(url, '_blank', 'noreferrer');
+        window.open(url, "_blank", "noreferrer");
       } else {
-        LNbits.utils.notifyApiError('Cannot open payment website');
+        LNbits.utils.notifyApiError("Cannot open payment website");
       }
     },
     getBalance() {
-      inkey = this.selectedWallet['inkey'];
+      inkey = this.selectedWallet["inkey"];
 
       if (inkey) {
         LNbits.api
-        .request('GET', `/api/v1/wallet`, inkey)
-        .then(response => {
-          this.balance = response.data.balance/1000/100000000;
-        })
-        .catch(err => {
-          LNbits.utils.notifyApiError(err);
-        })
+          .request("GET", `/api/v1/wallet`, inkey)
+          .then((response) => {
+            this.balance = response.data.balance / 1000 / 100000000;
+          })
+          .catch((err) => {
+            LNbits.utils.notifyApiError(err);
+          });
       }
     },
     payInvoice(invoice) {
       if (invoice) {
         LNbits.api
-        .payInvoice(this.selectedWallet, invoice)
-        .then(response => {
-          // ...
-          console.log("Pay Invoice Response: " + JSON.stringify(response));
-        })
-        .catch(err => {
-          LNbits.utils.notifyApiError(err);
-          console.error("Pay Invoice Error: " + JSON.stringify(err));
-        })
+          .payInvoice(this.selectedWallet, invoice)
+          .then((response) => {
+            // ...
+            console.log("Pay Invoice Response: " + JSON.stringify(response));
+          })
+          .catch((err) => {
+            LNbits.utils.notifyApiError(err);
+            console.error("Pay Invoice Error: " + JSON.stringify(err));
+          });
       }
     },
     messageReceived(event) {
       try {
-        this.reset();
-
         const transferData = JSON.parse(event.data);
+
+        this.reset();
 
         const type = transferData.type;
 
-        if (type === 'buy') {
+        if (type === "buy") {
           this.buyMessageReceived(transferData);
-        } else if (type === 'sell') {
+        } else if (type === "sell") {
           this.sellMessageReceived(transferData);
         }
-      } catch(e) {
+      } catch (e) {
         console.error(e);
       }
     },
@@ -152,20 +152,17 @@ new Vue({
       this.sell.paymentRequest = null;
       this.sell.estimatedAmount = null;
       this.sell.currency = null;
-    }
+    },
   },
   created() {
-    window.addEventListener('message', this.messageReceived);
+    window.addEventListener("message", this.messageReceived);
 
-    this.wallets =
-      this.g.user.wallets
-        .map(LNbits.map.wallet)
-        .map(wallet => ({
-          label: wallet.name,
-          inkey: wallet.inkey,
-          adminkey: wallet.adminkey
-        }));
+    this.wallets = this.g.user.wallets.map(LNbits.map.wallet).map((wallet) => ({
+      label: wallet.name,
+      inkey: wallet.inkey,
+      adminkey: wallet.adminkey,
+    }));
 
     this.selectedWallet = this.wallets[0];
-  }
+  },
 });
